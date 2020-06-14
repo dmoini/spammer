@@ -1,17 +1,24 @@
 import pyautogui
+import inquirer
 import time
 
 COUNTDOWN_SECONDS = 10
 
-# https://pypi.org/project/inquirer/
-
 
 def chooseTextFile():
-    pass
+    questions = [
+        inquirer.List('textFile',
+                      message='What text file would you like to spam?',
+                      choices=['Bee Movie'],
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    return answers['textFile'].replace(' ', '-').lower()
 
 
 def main():
-    file = open('./scripts/bee.txt', 'r')
+    filePath = './scripts/' + chooseTextFile() + '.txt'
+    file = open(filePath, 'r')
     print(f'The spamming will begin in {COUNTDOWN_SECONDS} second(s)')
     for i in range(COUNTDOWN_SECONDS, 0, -1):
         print(f'{i}')
