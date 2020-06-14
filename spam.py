@@ -8,8 +8,11 @@ COUNTDOWN_SECONDS = 10
 
 
 def chooseFile():
-    availableTexts = [os.path.splitext(' '.join(f.capitalize() for f in file.split('-')))[0]
-                      for file in os.listdir(SCRIPTS_DIR)]
+    availableTexts = []
+    for file in os.listdir(SCRIPTS_DIR):
+        s = ' '.join(f.capitalize() for f in file.split('-'))
+        s = os.path.splitext(s)[0]
+        availableTexts.append(s)
     questions = [
         inquirer.List('textFile',
                       message='What text file would you like to use?',
