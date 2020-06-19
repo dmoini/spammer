@@ -9,7 +9,7 @@ MAX_MESSAGE_COUNT = 50
 SCRIPTS_DIR = './scripts/'
 
 
-def confirmationAndCountdown():
+def promptConfirmationAndCountdown():
     confirmation = ''
     while True:
         confirmation = input(
@@ -20,21 +20,34 @@ def confirmationAndCountdown():
             sys.exit()
     print(f'\nThe spamming will begin in {COUNTDOWN_SECONDS} second(s)')
     for i in range(COUNTDOWN_SECONDS, 0, -1):
-        print(i)
+        print(f'{i}', end=' ', flush=True)
         time.sleep(1)
+    print()
+
+
+def printStats(startTime, wordCount):
+    totalSeconds = time.time() - startTime
+    wordsPerMinute = wordCount / (totalSeconds / 60)
+    print(f'\nExecution time: {totalSeconds:.2f} second(s)')
+    print(f'Word count: {wordCount}')
+    print(f'Words per minute: {wordsPerMinute:.2f}')
 
 
 def spamMessage():
-    message = input('What message would you like to send?\n> ')
-    count = 0
-    while not(0 < count <= MAX_MESSAGE_COUNT):
-        count = int(
-            input(f'How many times would you like to send this message? (Max is {MAX_MESSAGE_COUNT})\n> '))
+    message = input('What message would you like to send?: ')
+    messageCount = 0
+    while not(0 < messageCount <= MAX_MESSAGE_COUNT):
+        messageCount = int(
+            input(f'How many times would you like to send this message? (Max is {MAX_MESSAGE_COUNT}): '))
     print()
-    confirmationAndCountdown()
-    for i in range(count):
+    promptConfirmationAndCountdown()
+    startTime = time.time()
+    wordCount = 0
+    for i in range(messageCount):
         pyautogui.write(message)
         pyautogui.press('enter')
+        wordCount += 1
+    printStats(startTime, wordCount)
 
 
 def chooseFile():
@@ -56,12 +69,16 @@ def chooseFile():
 def spamTextFile():
     filePath = chooseFile()
     file = open(filePath, 'r')
-    confirmationAndCountdown()
+    promptConfirmationAndCountdown()
+    startTime = time.time()
+    wordCount = 0
     for line in file:
         for word in line.split():
             pyautogui.write(word)
             pyautogui.press('enter')
+            wordCount += 1
     file.close()
+    printStats(startTime, wordCount)
 
 
 def main():
