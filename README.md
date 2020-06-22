@@ -1,3 +1,3 @@
-# Spam Movie Scripts
+# Spammer
 
-Spam texts or scripts automatically to anyone via any messaging app.
+Automated spammer that works on any messaging platform.
