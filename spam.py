@@ -84,7 +84,7 @@ def spamTextFile():
 def main():
     questions = [
         inquirer.List('spamChoice',
-                      message='Would you like to send a repeated message or a text file word by word?',
+                      message='What would you like to spam?',
                       choices=['Repeated message', 'Text file word by word'],
                       ),
     ]
