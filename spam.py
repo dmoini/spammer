@@ -6,6 +6,7 @@ import sys
 
 COUNTDOWN_SECONDS = 10
 MAX_MESSAGE_COUNT = 50
+WORD_COUNT_PROMPT_COUNT = 100
 SCRIPTS_DIR = './scripts/'
 
 
@@ -23,6 +24,11 @@ def promptConfirmationAndCountdown():
         print(f'{i}', end=' ', flush=True)
         time.sleep(1)
     print()
+
+
+def checkAndPrintWordCount(wordCount):
+    if wordCount % WORD_COUNT_PROMPT_COUNT == 0:
+        print(f'{wordCount} words sent')
 
 
 def printStats(startTime, wordCount):
@@ -47,6 +53,7 @@ def spamMessage():
         pyautogui.write(message)
         pyautogui.press('enter')
         wordCount += 1
+        checkAndPrintWordCount(wordCount)
     printStats(startTime, wordCount)
 
 
@@ -77,6 +84,7 @@ def spamTextFile():
             pyautogui.write(word)
             pyautogui.press('enter')
             wordCount += 1
+            checkAndPrintWordCount(wordCount)
     file.close()
     printStats(startTime, wordCount)
 
