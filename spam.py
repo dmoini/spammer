@@ -5,9 +5,9 @@ import os
 import sys
 
 COUNTDOWN_SECONDS = 10
-MAX_MESSAGE_COUNT = 50
-WORD_COUNT_PROMPT_COUNT = 100
-SCRIPTS_DIR = './scripts/'
+MAX_REPEATED_MESSAGE_COUNT = 50
+WORD_PROGRESS_COUNT_PROMPT_COUNT = 100
+TEXT_FILES_DIR = './texts/'
 
 
 def promptConfirmationAndCountdown():
@@ -26,8 +26,8 @@ def promptConfirmationAndCountdown():
     print()
 
 
-def checkAndPrintWordCount(wordCount):
-    if wordCount % WORD_COUNT_PROMPT_COUNT == 0:
+def checkAndPrintWordProgressCount(wordCount):
+    if wordCount % WORD_PROGRESS_COUNT_PROMPT_COUNT == 0:
         print(f'{wordCount} words sent')
 
 
@@ -42,24 +42,26 @@ def printStats(startTime, wordCount):
 def spamMessage():
     message = input('What message would you like to send?: ')
     messageCount = 0
-    while not(0 < messageCount <= MAX_MESSAGE_COUNT):
+    while not(0 < messageCount <= MAX_REPEATED_MESSAGE_COUNT):
         messageCount = int(
-            input(f'How many times would you like to send this message? (Max is {MAX_MESSAGE_COUNT}): '))
+            input(f'How many times would you like to send this message? (Max is {MAX_REPEATED_MESSAGE_COUNT}): '))
     print()
     promptConfirmationAndCountdown()
     startTime = time.time()
     wordCount = 0
     for i in range(messageCount):
-        pyautogui.write(message)
-        pyautogui.press('enter')
+        print('cool')
+        print(message)
+        pyautogui.typewrite(message)
+        pyautogui.typewrite('enter')
         wordCount += 1
-        checkAndPrintWordCount(wordCount)
+        checkAndPrintWordProgressCount(wordCount)
     printStats(startTime, wordCount)
 
 
 def chooseFile():
     availableTexts = []
-    for file in os.listdir(SCRIPTS_DIR):
+    for file in os.listdir(TEXT_FILES_DIR):
         s = ' '.join(f.capitalize() for f in file.split('-'))
         s = os.path.splitext(s)[0]
         availableTexts.append(s)
@@ -70,7 +72,7 @@ def chooseFile():
                       ),
     ]
     answers = inquirer.prompt(questions)
-    return SCRIPTS_DIR + answers['textFile'].replace(' ', '-').lower() + '.txt'
+    return TEXT_FILES_DIR + answers['textFile'].replace(' ', '-').lower() + '.txt'
 
 
 def spamTextFile():
@@ -81,10 +83,10 @@ def spamTextFile():
     wordCount = 0
     for line in file:
         for word in line.split():
-            pyautogui.write(word)
-            pyautogui.press('enter')
+            pyautogui.typewrite(word)
+            pyautogui.typewrite('enter')
             wordCount += 1
-            checkAndPrintWordCount(wordCount)
+            checkAndPrintWordProgressCount(wordCount)
     file.close()
     printStats(startTime, wordCount)
 
