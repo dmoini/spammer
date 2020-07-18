@@ -45,15 +45,12 @@ def spamMessage():
     while not(0 < messageCount <= MAX_REPEATED_MESSAGE_COUNT):
         messageCount = int(
             input(f'How many times would you like to send this message? (Max is {MAX_REPEATED_MESSAGE_COUNT}): '))
-    print()
     promptConfirmationAndCountdown()
     startTime = time.time()
     wordCount = 0
     for i in range(messageCount):
-        print('cool')
-        print(message)
-        pyautogui.typewrite(message)
-        pyautogui.typewrite('enter')
+        pyautogui.write(message)
+        pyautogui.press('enter')
         wordCount += 1
         checkAndPrintWordProgressCount(wordCount)
     printStats(startTime, wordCount)
@@ -83,8 +80,8 @@ def spamTextFile():
     wordCount = 0
     for line in file:
         for word in line.split():
-            pyautogui.typewrite(word)
-            pyautogui.typewrite('enter')
+            pyautogui.write(word)
+            pyautogui.press('enter')
             wordCount += 1
             checkAndPrintWordProgressCount(wordCount)
     file.close()
