@@ -6,7 +6,7 @@ import sys
 
 COUNTDOWN_SECONDS = 10
 MAX_REPEATED_MESSAGE_COUNT = 50
-WORD_PROGRESS_COUNT_PROMPT_COUNT = 100
+PROGRESS_CHECK_COUNT = 100
 TEXT_FILES_DIR = './texts/'
 
 
@@ -26,17 +26,17 @@ def promptConfirmationAndCountdown():
     print()
 
 
-def checkAndPrintWordProgressCount(wordCount):
-    if wordCount % WORD_PROGRESS_COUNT_PROMPT_COUNT == 0:
-        print(f'{wordCount} words sent')
+def checkAndPrintProgress(count):
+    if count % PROGRESS_CHECK_COUNT == 0:
+        print(f'{count} words/images sent')
 
 
-def printStats(startTime, wordCount):
+def printStats(startTime, count):
     totalSeconds = time.time() - startTime
-    wordsPerMinute = wordCount / (totalSeconds / 60)
+    spamPerMinute = count / (totalSeconds / 60)
     print(f'\nExecution time: {totalSeconds:.2f} second(s)')
-    print(f'Word count: {wordCount}')
-    print(f'Words per minute: {wordsPerMinute:.2f}')
+    print(f'Word/image count: {count}')
+    print(f'Words/Images per minute: {spamPerMinute:.2f}')
 
 
 def spamMessage():
@@ -52,7 +52,7 @@ def spamMessage():
         pyautogui.write(message)
         pyautogui.press('enter')
         wordCount += 1
-        checkAndPrintWordProgressCount(wordCount)
+        checkAndPrintProgress(wordCount)
     printStats(startTime, wordCount)
 
 
@@ -76,30 +76,48 @@ def spamTextFile():
     filePath = chooseFile()
     file = open(filePath, 'r')
     promptConfirmationAndCountdown()
-    startTime = time.time()
     wordCount = 0
+    startTime = time.time()
     for line in file:
         for word in line.split():
             pyautogui.write(word)
             pyautogui.press('enter')
             wordCount += 1
-            checkAndPrintWordProgressCount(wordCount)
+            checkAndPrintProgress(wordCount)
     file.close()
     printStats(startTime, wordCount)
+
+
+def spamImage():
+    messageCount = 0
+    while not(0 < messageCount <= MAX_REPEATED_MESSAGE_COUNT):
+        messageCount = int(
+            input(f'How many times would you like to send the image? (Max is {MAX_REPEATED_MESSAGE_COUNT}): '))
+    print('\n** Make sure the image you would like to spam is copied to your clipboard **')
+    promptConfirmationAndCountdown()
+    imageCount = 0
+    startTime = time.time()
+    for i in range(messageCount):
+        pyautogui.hotkey('command', 'v')
+        pyautogui.press('enter')
+        imageCount += 1
+        checkAndPrintProgress(imageCount)
+    printStats(startTime, imageCount)
 
 
 def main():
     questions = [
         inquirer.List('spamChoice',
                       message='What would you like to spam?',
-                      choices=['Repeated message', 'Text file word by word'],
+                      choices=['Image', 'Repeated message',
+                               'Text file word by word'],
                       ),
     ]
+    spamFunctions = {'Image': spamImage,
+                     'Repeated message': spamMessage,
+                     'Text file word by word': spamTextFile}
     answers = inquirer.prompt(questions)
-    if answers['spamChoice'] == 'Repeated message':
-        spamMessage()
-    else:
-        spamTextFile()
+    spamFunctions[answers['spamChoice']]()
 
 
 if __name__ == "__main__":
