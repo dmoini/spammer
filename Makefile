@@ -5,7 +5,7 @@ init:
 	pip install -r requirements.txt
 
 run:
-	python3 spam.py
+	python3 spam/spam.py
 
 help:
 	@echo "    freeze"
