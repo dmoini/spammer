@@ -1,27 +1,23 @@
 import pyautogui
 import inquirer
+import subprocess
 import time
+import urllib.request
 import utils
-
-MAX_REPEATED_MESSAGE_COUNT = 50
 
 
 def spamMessage():
     message = input('What message would you like to send?: ')
-    messageCount = 0
-    while not(0 < messageCount <= MAX_REPEATED_MESSAGE_COUNT):
-        messageCount = int(
-            input(f'How many times would you like to send this message? (Max is {MAX_REPEATED_MESSAGE_COUNT}): '))
-
+    spamCount = utils.getSpamCount()
     utils.promptConfirmationAndCountdown()
     startTime = time.time()
-    wordCount = 0
-    for i in range(messageCount):
+    messageCount = 0
+    for i in range(spamCount):
         pyautogui.write(message)
         pyautogui.press('enter')
-        wordCount += 1
-        utils.checkAndPrintProgress(wordCount)
-    utils.printStats(startTime, wordCount)
+        messageCount += 1
+        utils.checkAndPrintProgress(messageCount)
+    utils.printStats(startTime, messageCount)
 
 
 def spamTextFile():
@@ -41,15 +37,29 @@ def spamTextFile():
 
 
 def spamImage():
-    messageCount = 0
-    while not(0 < messageCount <= MAX_REPEATED_MESSAGE_COUNT):
-        messageCount = int(
-            input(f'How many times would you like to send the image? (Max is {MAX_REPEATED_MESSAGE_COUNT}): '))
-    print('\n** Make sure the image you would like to spam is copied to your clipboard **')
+    spamCount = utils.getSpamCount()
+    print('\n** Make sure the image is copied to your clipboard **')
     utils.promptConfirmationAndCountdown()
     imageCount = 0
     startTime = time.time()
-    for i in range(messageCount):
+    for i in range(spamCount):
+        pyautogui.hotkey('command', 'v')
+        pyautogui.press('enter')
+        imageCount += 1
+        utils.checkAndPrintProgress(imageCount)
+    utils.printStats(startTime, imageCount)
+
+
+def spamImageUrl():
+    imageUrl = input('Image URL: ')
+    imageFileName = imageUrl.split('/')[-1]
+    urllib.request.urlretrieve(imageUrl, imageFileName)
+    utils.copyImageToClipboard(imageFileName)
+    spamCount = utils.getSpamCount()
+    utils.promptConfirmationAndCountdown()
+    imageCount = 0
+    startTime = time.time()
+    for i in range(spamCount):
         pyautogui.hotkey('command', 'v')
         pyautogui.press('enter')
         imageCount += 1
@@ -58,16 +68,19 @@ def spamImage():
 
 
 def main():
+    spamFunctions = {
+        'Image': spamImage,
+        'Image URL': spamImageUrl,
+        'Repeated message': spamMessage,
+        'Text file word by word': spamTextFile
+    }
     questions = [
-        inquirer.List('spamChoice',
-                      message='What would you like to spam?',
-                      choices=['Image', 'Repeated message',
-                               'Text file word by word'],
-                      ),
+        inquirer.List(
+            'spamChoice',
+            message='What would you like to spam?',
+            choices=[key for key in spamFunctions.keys()]
+        ),
     ]
-    spamFunctions = {'Image': spamImage,
-                     'Repeated message': spamMessage,
-                     'Text file word by word': spamTextFile}
     answers = inquirer.prompt(questions)
     spamFunctions[answers['spamChoice']]()
 
