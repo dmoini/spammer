@@ -1,18 +1,28 @@
 import inquirer
 import os
+import subprocess
 import sys
 import time
 
 COUNTDOWN_SECONDS = 10
+MAX_SPAM_COUNT = 50
 PROGRESS_CHECK_COUNT = 100
+SPAM_COUNT_PROMPT = f'How many times? (Max is {MAX_SPAM_COUNT}): '
+SPAM_CONFIRMATION = '\nSpamming will begin shortly. To exit the script early, move your mouse to any corner of the screen.\n\nWould you like to proceed [y/n]: '
 TEXT_FILES_DIR = './texts/'
+
+
+def getSpamCount():
+    spamCount = 0
+    while not(0 < spamCount <= MAX_SPAM_COUNT):
+        spamCount = int(input(SPAM_COUNT_PROMPT))
+    return spamCount
 
 
 def promptConfirmationAndCountdown():
     confirmation = ''
     while True:
-        confirmation = input(
-            'Spamming will begin shortly. To exit script early, move your mouse to any corner of your screen. Please confirm you understand this and would like to proceed [y/n]: ').lower()
+        confirmation = input(SPAM_CONFIRMATION).lower()
         if confirmation == 'y':
             break
         if confirmation == 'n':
@@ -40,14 +50,19 @@ def printStats(startTime, count):
 def chooseFile():
     availableTexts = []
     for file in os.listdir(TEXT_FILES_DIR):
-        s = ' '.join(f.capitalize() for f in file.split('-'))
-        s = os.path.splitext(s)[0]
-        availableTexts.append(s)
+        textFileName = ' '.join(f.capitalize() for f in file.split('-'))
+        textName = os.path.splitext(s)[0]
+        availableTexts.append(textName)
     questions = [
-        inquirer.List('textFile',
-                      message='What text file would you like to use?',
-                      choices=availableTexts,
-                      ),
+        inquirer.List(
+            'textFile',
+            message='What text file would you like to use?',
+            choices=availableTexts,
+        ),
     ]
     answers = inquirer.prompt(questions)
     return TEXT_FILES_DIR + answers['textFile'].replace(' ', '-').lower() + '.txt'
+
+
+def copyImageToClipboard(imagePath):
+    subprocess.run(['osascript', '-e', f'set the clipboard to (read (POSIX file \"{imagePath}\") as JPEG picture)'])
