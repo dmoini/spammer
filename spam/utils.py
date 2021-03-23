@@ -8,6 +8,7 @@ COUNTDOWN_SECONDS = 10
 MAX_SPAM_COUNT = 50
 PROGRESS_CHECK_COUNT = 100
 SPAM_COUNT_PROMPT = f'How many times? (Max is {MAX_SPAM_COUNT}): '
+SPAM_CONFIRMATION = '\nSpamming will begin shortly. To exit the script early, move your mouse to any corner of the screen.\n\nWould you like to proceed [y/n]: '
 TEXT_FILES_DIR = './texts/'
 
 
@@ -21,9 +22,7 @@ def getSpamCount():
 def promptConfirmationAndCountdown():
     confirmation = ''
     while True:
-        confirmation = input(
-            'Spamming will begin shortly. To exit script early, move your mouse to any corner of your screen. Please confirm you understand this and would like to proceed [y/n]: '
-        ).lower()
+        confirmation = input(SPAM_CONFIRMATION).lower()
         if confirmation == 'y':
             break
         if confirmation == 'n':
@@ -65,6 +64,5 @@ def chooseFile():
     return TEXT_FILES_DIR + answers['textFile'].replace(' ', '-').lower() + '.txt'
 
 
-def copyImageToClipboard(image):
-    subprocess.run(
-        ['osascript', '-e', f'set the clipboard to (read (POSIX file \"{image}\") as JPEG picture)', '2>', '/dev/null'])
+def copyImageToClipboard(imagePath):
+    subprocess.run(['osascript', '-e', f'set the clipboard to (read (POSIX file \"{imagePath}\") as JPEG picture)'])

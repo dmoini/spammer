@@ -1,9 +1,10 @@
 import pyautogui
 import inquirer
-import subprocess
 import time
 import urllib.request
 import utils
+
+IMAGE_DOWNLOAD_FOLDER = '/tmp/'
 
 
 def spamMessage():
@@ -52,9 +53,11 @@ def spamImage():
 
 def spamImageUrl():
     imageUrl = input('Image URL: ')
-    imageFileName = imageUrl.split('/')[-1]
-    urllib.request.urlretrieve(imageUrl, imageFileName)
-    utils.copyImageToClipboard(imageFileName)
+    imageName = imageUrl.split('/')[-1]
+    imagePath = IMAGE_DOWNLOAD_FOLDER + imageName
+    urllib.request.urlretrieve(imageUrl, imagePath)
+    print(f'Downloaded image {imageName} as {imagePath}')
+    utils.copyImageToClipboard(imagePath)
     spamCount = utils.getSpamCount()
     utils.promptConfirmationAndCountdown()
     imageCount = 0
