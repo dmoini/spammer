@@ -1,91 +1,91 @@
-import pyautogui
-import inquirer
 import time
 import urllib.request
+import pyautogui
+import inquirer
 import utils
 
 IMAGE_DOWNLOAD_FOLDER = '/tmp/'
 
 
-def spamMessage():
+def spam_message():
     message = input('What message would you like to send?: ')
-    spamCount = utils.getSpamCount()
-    utils.promptConfirmationAndCountdown()
-    startTime = time.time()
-    messageCount = 0
-    for i in range(spamCount):
+    spam_count = utils.get_spam_count()
+    utils.prompt_confirmation_and_countdown()
+    start_time = time.time()
+    message_count = 0
+    for _ in range(spam_count):
         pyautogui.write(message)
         pyautogui.press('enter')
-        messageCount += 1
-        utils.checkAndPrintProgress(messageCount)
-    utils.printStats(startTime, messageCount)
+        message_count += 1
+        utils.check_and_print_progress(message_count)
+    utils.print_stats(start_time, message_count)
 
 
-def spamTextFile():
-    filePath = utils.chooseFile()
-    file = open(filePath, 'r')
-    utils.promptConfirmationAndCountdown()
-    wordCount = 0
-    startTime = time.time()
+def spam_text_file():
+    file_path = utils.choose_file()
+    file = open(file_path, 'r')
+    utils.prompt_confirmation_and_countdown()
+    word_count = 0
+    start_time = time.time()
     for line in file:
         for word in line.split():
             pyautogui.write(word)
             pyautogui.press('enter')
-            wordCount += 1
-            utils.checkAndPrintProgress(wordCount)
+            word_count += 1
+            utils.check_and_print_progress(word_count)
     file.close()
-    utils.printStats(startTime, wordCount)
+    utils.print_stats(start_time, word_count)
 
 
-def spamImage():
-    spamCount = utils.getSpamCount()
+def spam_image():
+    spam_count = utils.get_spam_count()
     print('\n** Make sure the image is copied to your clipboard **')
-    utils.promptConfirmationAndCountdown()
-    imageCount = 0
-    startTime = time.time()
-    for i in range(spamCount):
+    utils.prompt_confirmation_and_countdown()
+    image_count = 0
+    start_time = time.time()
+    for _ in range(spam_count):
         pyautogui.hotkey('command', 'v')
         pyautogui.press('enter')
-        imageCount += 1
-        utils.checkAndPrintProgress(imageCount)
-    utils.printStats(startTime, imageCount)
+        image_count += 1
+        utils.check_and_print_progress(image_count)
+    utils.print_stats(start_time, image_count)
 
 
-def spamImageUrl():
-    imageUrl = input('Image URL: ')
-    imageName = imageUrl.split('/')[-1]
-    imagePath = IMAGE_DOWNLOAD_FOLDER + imageName
-    urllib.request.urlretrieve(imageUrl, imagePath)
-    print(f'Downloaded image {imageName} as {imagePath}')
-    utils.copyImageToClipboard(imagePath)
-    spamCount = utils.getSpamCount()
-    utils.promptConfirmationAndCountdown()
-    imageCount = 0
-    startTime = time.time()
-    for i in range(spamCount):
+def spam_image_url():
+    image_url = input('Image URL: ')
+    image_name = image_url.split('/')[-1]
+    image_path = IMAGE_DOWNLOAD_FOLDER + image_name
+    urllib.request.urlretrieve(image_url, image_path)
+    print(f'Downloaded image {image_name} as {image_path}')
+    utils.copy_image_to_clipboard(image_path)
+    spam_count = utils.get_spam_count()
+    utils.prompt_confirmation_and_countdown()
+    image_count = 0
+    start_time = time.time()
+    for _ in range(spam_count):
         pyautogui.hotkey('command', 'v')
         pyautogui.press('enter')
-        imageCount += 1
-        utils.checkAndPrintProgress(imageCount)
-    utils.printStats(startTime, imageCount)
+        image_count += 1
+        utils.check_and_print_progress(image_count)
+    utils.print_stats(start_time, image_count)
 
 
 def main():
-    spamFunctions = {
-        'Image': spamImage,
-        'Image URL': spamImageUrl,
-        'Repeated message': spamMessage,
-        'Text file word by word': spamTextFile
+    spam_functions = {
+        'Image': spam_image,
+        'Image URL': spam_image_url,
+        'Repeated message': spam_message,
+        'Text file word by word': spam_text_file
     }
     questions = [
         inquirer.List(
             'spamChoice',
             message='What would you like to spam?',
-            choices=[key for key in spamFunctions.keys()]
+            choices=[spam_functions.keys()]
         ),
     ]
     answers = inquirer.prompt(questions)
-    spamFunctions[answers['spamChoice']]()
+    spam_functions[answers['spamChoice']]()
 
 
 if __name__ == "__main__":

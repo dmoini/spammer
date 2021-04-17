@@ -4,6 +4,9 @@ freeze:
 init:
 	pip install -r requirements.txt
 
+lint:
+	pylint spam/*.py
+
 run:
 	python3 spam/spam.py
 
