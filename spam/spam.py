@@ -81,7 +81,7 @@ def main():
         inquirer.List(
             'spamChoice',
             message='What would you like to spam?',
-            choices=[spam_functions.keys()]
+            choices=list(spam_functions.keys())
         ),
     ]
     answers = inquirer.prompt(questions)
